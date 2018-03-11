@@ -5,24 +5,25 @@ import re
 import random
 import os
 import subprocess
+import speech_recognition as sr
 SpeechMsg = ""
 AvrilCheck = 0
 class Avril:
   def __init__(self):
     self.keys = map(lambda x:re.compile(x[0], re.IGNORECASE),gPats)
     self.values = map(lambda x:x[1],gPats)
-  def translate(self,str,dict):
-    words = string.split(string.lower(str))
+  def translate(self,thestr,dict):
+    words = string.split(string.lower(thestr))
     keys = dict.keys();
     for i in range(0,len(words)):
       if words[i] in keys:
         words[i] = dict[words[i]]
     return string.join(words)
 
-  def respond(self,str):
+  def respond(self,thestr):
     f = open("say","w+")
     for i in range(0,len(self.keys)):
-      match = self.keys[i].match(str)
+      match = self.keys[i].match(thestr)
       if match:
         resp = random.choice(self.values[i])
         pos = string.find(resp,'%')
@@ -57,6 +58,18 @@ gReflections = {
 }
 
 gPats = [
+  [r'my name is (.*)',
+  [  "nice name %1 :)",
+    "really? you have a strange name...",
+    "nice to meet you %1"]],
+
+  [r'what is your name?',
+  [   "my name is Avril :)"]],
+
+  [r'who is KiDo?',
+  [  "well he modified me ;)",
+    "he is my master!"]],
+  
   [r'I need (.*)',
   [  "Why do you need %1?",
     "Would it really help you to get %1?",
@@ -131,8 +144,7 @@ gPats = [
     "Why don't you tell me about a childhood friend?"]],
   
   [r'Yes',
-  [  "You seem quite sure.",
-    "OK, tell me about your sex life?"]],
+  [  "You seem quite sure."]],
   
   [r'(.*) computer(.*)',
   [  "Are you really talking about me?",
@@ -259,15 +271,11 @@ gPats = [
     "Good-bye.",
     "Thank you, that will be $150.  Have a good day!"]],
 
-  [r'(.*) fuck(.*)',
-  [  "fuck you too buddy",
-    "do you want to fuck me?",
-    "go fuck yourself"]],
   
   [r'(.*) old (.*) you',
-  [  "i am 6 years old :)",
-    "do you really wanna know? im 6",
-    "my age? im 6."]], 
+  [  "i am 18 years old :)",
+    "do you really wanna know? im 18",
+    "my age? im 18."]], 
 
   [r'where (.*) you from (.*)',
   [  "i am from my owners computer :)",
@@ -295,19 +303,6 @@ gPats = [
     "hello there how you doing?",
     "hiiiii"]],
 
-  [r'my name is (.*)',
-  [  "nice name %1 :)",
-    "really? you have a strange name...",
-    "nice to meet you $1"]],
-
-  [r'what is (.*) name (.*)',
-  [   "my name is blue :)"]],
-
-  [r'(.*) who is planb (.*)',
-  [  "well he modified me ;)",
-    "he is my father",
-    "the king of all kings!!"]],
-
   [r'(.) movies (.*)',
   [  "did you watch a movie?",
     "what kind of movies do you like?",
@@ -322,12 +317,10 @@ gPats = [
     "Very interesting.",
     "%1.",
     "I see.  And what does that tell you?",
-    "do you have a girlfriend or a boyfriend?",
     "How do you feel when you say that?"]],
 
   ]
 def GetSpeechText():
-  import speech_recognition as sr
   r = sr.Recognizer()
   byelist = ['bye','good bye','good night']
   with sr.Microphone() as source:
@@ -349,7 +342,6 @@ def GetSpeechText():
       pass
 def hey_avril():
   while True:
-    import speech_recognition as sr
     r = sr.Recognizer()
     with sr.Microphone() as source:
         audio = r.listen(source)
@@ -364,8 +356,8 @@ def hey_avril():
     except sr.RequestError as e:
         pass
 def command_interface():
-  print ("Therapist\n---------")
-  print ("Talk to the program by typing in plain English, using normal upper-")
+  print ("TheAvril\n---------")
+  print ("Talk to the her by typing in plain English, using normal upper-")
   print ('and lower-case letters and punctuation.  Enter "quit" when done.')
   print ('='*72+ "\n")
   thread.start_new_thread( hey_avril, () )
